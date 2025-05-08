@@ -22,8 +22,20 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        min-height: 100vh;
         padding: 20px;
+      }
+      #loginPage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        width: 100%;
+      }
+      #gamePage {
+        display: none;
+        width: 100%;
       }
       .form-input {
         width: 100%;
@@ -60,13 +72,13 @@
       }
       .grid-container {
         display: grid;
-        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-columns: 1fr 2fr;
         gap: 40px;
         width: 100%;
         max-width: 1200px;
         margin-top: 20px;
       }
-      .sidebar, .chat-container {
+      .sidebar {
         background: #23243a;
         color: #fff;
         padding: 32px 24px;
@@ -77,7 +89,7 @@
         display: flex;
         flex-direction: column;
       }
-      .sidebar h2, .chat-container h2 {
+      .sidebar h2 {
         color: #6c63ff;
         font-size: 1.4rem;
         font-weight: 700;
@@ -87,8 +99,8 @@
         gap: 0.5rem;
       }
       .board-container {
-        width: 440px;
-        height: 440px;
+        width: 600px;
+        height: 600px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
@@ -165,8 +177,8 @@
         display: grid;
         grid-template-columns: repeat(8, 1fr);
         grid-template-rows: repeat(8, 1fr);
-        width: 400px;
-        height: 400px;
+        width: 560px;
+        height: 560px;
         border: 2px solid #6c63ff;
         background: #23243a;
         margin-bottom: 1rem;
@@ -219,40 +231,59 @@
       .possible-move {
         background-color: #6eb5ff;
       }
+      .chat-container {
+        background: #23243a;
+        color: #fff;
+        padding: 32px 24px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        display: flex;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body>
-    <div class="container mx-auto">
-      <div
-        class="flex justify-center items-center flex-col max-w-screen-md px-5"
-      >
-        <input
-          id="username"
-          type="text"
-          placeholder="Username"
-          class="form-input mb-4 mt-4 py-2 px-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-        />
-        <input
-          id="roomName"
-          type="text"
-          placeholder="Room Name"
-          class="form-input mb-4 py-2 px-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
-        />
-        <div class="flex space-x-4">
-          <button
-            id="createRoomButton"
-            class="button bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none"
-          >
-            Create Room
-          </button>
-          <button
-            id="joinRoomButton"
-            class="button bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none"
-          >
-            Join Room
-          </button>
+    <!-- Login Page -->
+    <div id="loginPage">
+      <div class="container mx-auto">
+        <div class="flex justify-center items-center flex-col max-w-screen-md px-5">
+          <h1 class="text-3xl font-bold mb-8 text-white">Chess Game</h1>
+          <input
+            id="username"
+            type="text"
+            placeholder="Username"
+            class="form-input mb-4 mt-4 py-2 px-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+          />
+          <input
+            id="roomName"
+            type="text"
+            placeholder="Room Name"
+            class="form-input mb-4 py-2 px-3 rounded-lg border border-gray-300 focus:outline-none focus:border-blue-500"
+          />
+          <div class="flex space-x-4">
+            <button
+              id="createRoomButton"
+              class="button bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none"
+            >
+              Create Room
+            </button>
+            <button
+              id="joinRoomButton"
+              class="button bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none"
+            >
+              Join Room
+            </button>
+          </div>
+          <div class="message mt-4 text-center"></div>
         </div>
       </div>
+    </div>
+
+    <!-- Game Page -->
+    <div id="gamePage">
       <div class="grid-container">
         <div class="sidebar">
           <h2 class="text-xl font-bold mb-4">Users Panel</h2>
@@ -266,22 +297,23 @@
           <div class="user-count mt-2"></div>
           <div class="turn-popup"></div>
           <div class="message"></div>
-        </div>
-        <div class="chat-container">
-          <h2 class="text-xl font-bold mb-4">Chat</h2>
-          <div class="chat-messages"></div>
-          <form id="chatForm" class="chat-form">
-            <input
-              id="chatInput"
-              type="text"
-              placeholder="Type your message..."
-              autocomplete="off"
-            />
-            <button type="submit" class="button">Send</button>
-          </form>
+          <div class="chat-container">
+            <h2 class="text-xl font-bold mb-4">Chat</h2>
+            <div class="chat-messages"></div>
+            <form id="chatForm" class="chat-form">
+              <input
+                id="chatInput"
+                type="text"
+                placeholder="Type your message..."
+                autocomplete="off"
+              />
+              <button type="submit" class="button">Send</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
+
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script src="/javascripts/script.js"></script>

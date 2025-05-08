@@ -14,6 +14,8 @@ const usersList = document.querySelector("#usersList");
 const chatForm = document.querySelector("#chatForm");
 const chatInput = document.querySelector("#chatInput");
 const chatMessages = document.querySelector(".chat-messages");
+const loginPage = document.querySelector("#loginPage");
+const gamePage = document.querySelector("#gamePage");
 
 let draggedPiece = null;
 let sourceSquare = null;
@@ -21,22 +23,41 @@ let playerRole = null;
 let currentRoom = null;
 let username = null;
 
+const switchToGamePage = () => {
+  loginPage.style.display = "none";
+  gamePage.style.display = "block";
+  renderBoard();
+};
+
+const showError = (message) => {
+  messageElement.textContent = message;
+  messageElement.style.color = "#ff4444";
+  setTimeout(() => {
+    messageElement.textContent = "";
+    messageElement.style.color = "#b3b3b3";
+  }, 3000);
+};
+
 createRoomButton.addEventListener("click", () => {
   const roomName = roomNameInput.value.trim();
   username = usernameInput.value.trim();
-  if (roomName && username) {
-    socket.emit("createRoom", { roomName, username });
-    currentRoom = roomName;
+  if (!roomName || !username) {
+    showError("Please enter both username and room name");
+    return;
   }
+  socket.emit("createRoom", { roomName, username });
+  currentRoom = roomName;
 });
 
 joinRoomButton.addEventListener("click", () => {
   const roomName = roomNameInput.value.trim();
   username = usernameInput.value.trim();
-  if (roomName && username) {
-    socket.emit("joinRoom", { roomName, username });
-    currentRoom = roomName;
+  if (!roomName || !username) {
+    showError("Please enter both username and room name");
+    return;
   }
+  socket.emit("joinRoom", { roomName, username });
+  currentRoom = roomName;
 });
 
 chatForm.addEventListener("submit", (e) => {
@@ -166,7 +187,7 @@ const renderBoard = () => {
 
 socket.on("PlayerRole", (role) => {
   playerRole = role;
-  renderBoard();
+  switchToGamePage();
 });
 
 socket.on("spectator", () => {
@@ -198,8 +219,7 @@ socket.on("updateUsers", (users) => {
 });
 
 socket.on("error", (message) => {
-  messageElement.textContent = message;
-  setTimeout(() => (messageElement.textContent = ""), 3000);
+  showError(message);
 });
 
 socket.on("opponentJoined", () => {

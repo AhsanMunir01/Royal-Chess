@@ -18,6 +18,14 @@ app.get("/", (req, res) => {
   res.render("index", { title: "Chess Game" });
 });
 
+app.get("/game", (req, res) => {
+  const { username, room, action } = req.query;
+  if (!username || !room || !action) {
+    return res.redirect("/");
+  }
+  res.render("index", { title: "Chess Game", username, room, action });
+});
+
 io.on("connection", function (uniquesocket) {
   console.log("User connected");
 
